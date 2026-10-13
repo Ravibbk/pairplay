@@ -1,0 +1,30 @@
+{
+  "name": "pairplay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PairPlay — A playful, private, real-time couples web application",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=server && npm run build --workspace=client",
+    "test": "npm run test --workspace=server && npm run test --workspace=client",
+    "lint": "npm run lint --workspace=server && npm run lint --workspace=client"
+  },
+  "keywords": [
+    "couples",
+    "games",
+    "real-time",
+    "socket.io",
+    "react",
+    "express",
+    "prisma",
+    "ai"
+  ],
+  "author": "Ravibbk",
+  "license": "MIT"
+}

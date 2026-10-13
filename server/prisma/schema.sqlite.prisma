@@ -1,0 +1,160 @@
+// SQLite schema mirror for local development & automated tests
+// Identical models to PostgreSQL schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  avatarUrl    String?
+  bio          String?
+  partnerCode  String   @unique
+  interests    String   @default("[]") // JSON stringified array
+  loveLanguage String?  @default("Quality Time")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  hostedRooms    Room[]        @relation("RoomHost")
+  partnerRooms   Room[]        @relation("RoomPartner")
+  answers        GameAnswer[]
+  events         ProductEvent[]
+  couplesAsUser1 Couple[]      @relation("CoupleUser1")
+  couplesAsUser2 Couple[]      @relation("CoupleUser2")
+
+  @@index([email])
+  @@index([partnerCode])
+}
+
+model Couple {
+  id           String   @id @default(uuid())
+  user1Id      String
+  user2Id      String
+  status       String   @default("ACTIVE")
+  anniversary  DateTime?
+  connectedAt  DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user1        User     @relation("CoupleUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2        User     @relation("CoupleUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  dailySparks  DailySpark[]
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
+
+model Room {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  hostId       String
+  partnerId    String?
+  status       String        @default("WAITING")
+  category     String        @default("Deep Connections")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  host         User          @relation("RoomHost", fields: [hostId], references: [id], onDelete: Cascade)
+  partner      User?         @relation("RoomPartner", fields: [partnerId], references: [id], onDelete: SetNull)
+  gameSessions GameSession[]
+
+  @@index([code])
+  @@index([hostId])
+  @@index([partnerId])
+}
+
+model GameSession {
+  id                   String         @id @default(uuid())
+  roomId               String
+  category             String
+  status               String         @default("PREPARING")
+  currentQuestionIndex Int            @default(0)
+  totalQuestions       Int            @default(5)
+  startedAt            DateTime       @default(now())
+  completedAt          DateTime?
+
+  room                 Room           @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  questions            GameQuestion[]
+  answers              GameAnswer[]
+
+  @@index([roomId])
+  @@index([status])
+}
+
+model Question {
+  id             String   @id @default(uuid())
+  text           String
+  category       String
+  isAiGenerated  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([category])
+}
+
+model GameQuestion {
+  id            String       @id @default(uuid())
+  gameSessionId String
+  questionText  String
+  category      String
+  orderIndex    Int
+
+  gameSession   GameSession  @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  answers       GameAnswer[]
+
+  @@index([gameSessionId])
+}
+
+model GameAnswer {
+  id            String       @id @default(uuid())
+  gameSessionId String
+  gameQuestionId String
+  userId        String
+  answerText    String
+  reaction      String?
+  submittedAt   DateTime     @default(now())
+
+  gameSession   GameSession  @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  gameQuestion  GameQuestion @relation(fields: [gameQuestionId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([gameSessionId, gameQuestionId, userId])
+  @@index([gameSessionId])
+  @@index([userId])
+}
+
+model DailySpark {
+  id            String    @id @default(uuid())
+  coupleId      String?
+  date          String
+  questionText  String
+  category      String
+  isAiGenerated Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  couple        Couple?   @relation(fields: [coupleId], references: [id], onDelete: SetNull)
+
+  @@index([date])
+  @@index([coupleId])
+}
+
+model ProductEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  eventType String
+  metadata  String   @default("{}")
+  timestamp DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([eventType])
+  @@index([timestamp])
+  @@index([userId])
+}

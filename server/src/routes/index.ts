@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import authRoutes from './auth.routes.js';
 import roomRoutes from './room.routes.js';
 import gameRoutes from './game.routes.js';
@@ -8,7 +8,7 @@ import analyticsRoutes from './analytics.routes.js';
 const router = Router();
 
 // Health check endpoint
-router.get('/health', (req, res) => {
+router.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
     uptime: process.uptime(),

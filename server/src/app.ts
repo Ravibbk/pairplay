@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -45,7 +45,7 @@ app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 app.use('/api', apiRoutes);
 
 // Catch-all 404 for undefined API endpoints
-app.use('/api/*', (req, res) => {
+app.use('/api/*', (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: `API route not found: ${req.method} ${req.originalUrl}`,

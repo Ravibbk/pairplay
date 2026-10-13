@@ -5,5 +5,9 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     testTimeout: 10000,
+    env: {
+      DATABASE_URL: 'file:./dev.db',
+      NODE_ENV: 'test',
+    },
   },
 });

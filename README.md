@@ -242,12 +242,5 @@ cd .. && npm run build
 
 ---
 
-## 🧑‍💻 Technical Portfolio & Interview Notes
-For detailed software engineering decisions, concurrency trade-offs, database indexing, and scaling considerations, see:
-- [📖 Technical Interview Guide](docs/INTERVIEW_GUIDE.md)
-- [📋 5-Minute Demonstration Checklist](docs/DEMO_CHECKLIST.md)
 
 ---
-
-## 📜 License
-PairPlay is open-source software licensed under the [MIT License](LICENSE). Built with ❤️ for couples everywhere.

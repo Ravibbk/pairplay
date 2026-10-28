@@ -13,7 +13,7 @@
     "dev:server": "npm run dev --workspace=server",
     "build": "npm run build --workspace=server && npm run build --workspace=client",
     "start": "node server/dist/index.js",
-    "render-build": "npm install && npm run build --workspace=client && npm run prisma:push --workspace=server && npm run prisma:seed --workspace=server && npm run build --workspace=server",
+    "render-build": "npm install --include=dev && npm run build --workspace=client && npm run prisma:push --workspace=server && npm run prisma:seed --workspace=server && npm run build --workspace=server",
     "prisma:push": "npm run prisma:push --workspace=server",
     "prisma:seed": "npm run prisma:seed --workspace=server",
     "test": "npm run test --workspace=server && npm run test --workspace=client",

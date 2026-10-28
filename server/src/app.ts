@@ -2,9 +2,15 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { env } from './config/env.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -51,6 +57,22 @@ app.use('/api/*', (req: Request, res: Response) => {
     message: `API route not found: ${req.method} ${req.originalUrl}`,
   });
 });
+
+// Serve static client assets in production if available
+const possibleClientDistPaths = [
+  path.resolve(process.cwd(), 'client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(__dirname, '../../../client/dist'),
+];
+const clientDistPath = possibleClientDistPaths.find((p) => fs.existsSync(p));
+
+if (clientDistPath) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req: Request, res: Response) => {
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
 
 // Centralized error handler
 app.use(errorHandler);

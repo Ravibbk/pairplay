@@ -13,3 +13,5 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+
+process.env.DATABASE_URL = env.DATABASE_URL;

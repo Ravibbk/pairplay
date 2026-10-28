@@ -20,10 +20,6 @@ try {
     stdio: 'inherit',
     env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL },
   });
-  execSync(`npx prisma generate --schema=${schema}`, {
-    stdio: 'inherit',
-    env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL },
-  });
   console.log('✅ Database schema synchronized successfully.');
 } catch (error) {
   console.error('❌ Failed to synchronize database schema:', error);

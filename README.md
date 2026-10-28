@@ -10,6 +10,7 @@
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-4.8-black.svg)](https://socket.io/)
 [![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748.svg)](https://www.prisma.io/)
 
+Live link : https://pairplay-1.onrender.com
 ---
 
 ## 🌟 Executive Overview & Problem Statement
